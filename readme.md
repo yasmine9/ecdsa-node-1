@@ -1,31 +1,32 @@
-## ECDSA Node
+# ECDSA Node
 
-This project is an example of using a client and server to facilitate transfers between different addresses. Since there is just a single server on the back-end handling transfers, this is clearly very centralized. We won't worry about distributed consensus for this project.
+## Description
 
-However, something that we would like to incoporate is Public Key Cryptography. By using Elliptic Curve Digital Signatures we can make it so the server only allows transfers that have been signed for by the person who owns the associated address.
+This project is an example of using a client and server to facilitate transfers between different addresses. We use Elliptic Curve Digital Signatures to make sure transfers are done by the sender address only.
 
-### Video instructions
-For an overview of this project as well as getting started instructions, check out the following video:
+## How is the logic built
 
-https://www.loom.com/share/0d3c74890b8e44a5918c4cacb3f646c4
- 
+- Use `generateKeys.js` script to generate a private/public key pair. As an example wwe generate 3 users and assigned an initial balance to them. Addresses with their respective private/public keys are mentioned at the end of the script.
+- Use `signTransaction.js` script to sign a transfer transaction using your private key. Make sure to replace the 2nd sign parameter by your private key, and msg by the transfer to be done. the message follows this format : `address1,address2,amount,nonce`. You can get the nonce to be used by putting your address in the frontEnd and reading the `Next Nonce` field.
+- User should pass in the recoveryBit, message and signature in the frontEnd ( the signature ad recoveryBit are returned by `signTransaction` script). Then hit the `Submit` botton.
+- The server will recover the public key of the signer, and his address:
+  - if the signer address is different from the sender of funds, an error is returned.
+  - if not and the sender has enough funds, the transfer is executed.
+  - we return the amount, sender address and receipent address to the frontend to be shown.
+- The private key of the user is never sent to the app ( neither client nor server side) which prevent it from being compromised.
+- It is not possible to transfer funds from a different account, as the signer of the transaction should be the same as the sender of funds.
+- We introduce a `nonce` for each user, to prevent signature to be re-used by an attacker (replay attack). For every new transaction sent by a user, he should use the `nextNonce`.
+
+## How to run the project
+
 ### Client
-
-The client folder contains a [react app](https://reactjs.org/) using [vite](https://vitejs.dev/). To get started, follow these steps:
 
 1. Open up a terminal in the `/client` folder
 2. Run `npm install` to install all the depedencies
-3. Run `npm run dev` to start the application 
-4. Now you should be able to visit the app at http://127.0.0.1:5173/
+3. Run `npm run dev` to start the application
 
 ### Server
 
-The server folder contains a node.js server using [express](https://expressjs.com/). To run the server, follow these steps:
-
-1. Open a terminal within the `/server` folder 
-2. Run `npm install` to install all the depedencies 
-3. Run `node index` to start the server 
-
-The application should connect to the default server port (3042) automatically! 
-
-_Hint_ - Use [nodemon](https://www.npmjs.com/package/nodemon) instead of `node` to automatically restart the server on any changes.
+1. Open a terminal within the `/server` folder
+2. Run `npm install` to install all the depedencies
+3. Run `node index` to start the server

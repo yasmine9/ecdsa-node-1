@@ -9,6 +9,7 @@ function App() {
   const [signature, setSignature] = useState("");
   const [recoveryBit, setRecoveryBit] = useState("");
   const [message, setMessage] = useState("");
+  const [nonce, setNonce] = useState("");
 
   return (
     <div className="app">
@@ -23,7 +24,8 @@ function App() {
         setMessage={setMessage}
         recoveryBit={recoveryBit}
         setRecoveryBit={setRecoveryBit}
-
+        nonce= {nonce}
+        setNonce = {setNonce}
       />
       <Transfer setBalance={setBalance} setAddress={setAddress}
   signature = {signature} message={message} recoveryBit={recoveryBit} />

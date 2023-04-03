@@ -9,13 +9,14 @@ Note that this script will be used locally by the user, private key is not sent 
 */
 async function sign() {
   const message =
-    "0x042448aa1c326163097ee4857eeeddbb8b4a5b84,0xc30093d173e5bd9620e04a91abe12141e787c64f,5";
+    "0x118335c85ca5d400350836ffe10b52c514d8f926,0x90048c6dc4b8f6fe8d397906262ae2c97651fd1c,5,0";
   const hash = keccak256(utf8ToBytes(message));
   const signature = await secp.sign(
     hash,
-    "972dc3a945adb413003fb946e82881e07d027a99e10ffa144ab75f7630b4b446",
+    "f1ec1d7d96717bbffaedca1d16b7e4d22bf2c5ae863447dd89fa4a2cc08f0ade",
     { recovered: true }
   );
+  console.log("Message:", message);
   console.log(toHex(signature[0]));
   console.log(signature[1]);
 }

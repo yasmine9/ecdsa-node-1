@@ -1,17 +1,21 @@
 import server from "./server";
 
-function Wallet({ message, setMessage, address, setRecoveryBit, recoveryBit, signature, setSignature, setAddress, balance, setBalance }) {
+function Wallet({ message, setMessage, address, setRecoveryBit, recoveryBit, signature, setSignature, setAddress, balance, setBalance,nonce, setNonce }) {
   
   async function onChange(evt) {
-    setAddress(evt.target.value);    
-    if (address) {
+    console.log('called',evt.target.value);
+    let addr = evt.target.value;
+    setAddress(addr);    
       const {
         data: { balance },
-      } = await server.get(`balance/${address}`);
+      } = await server.get(`balance/${addr}`);
       setBalance(balance);
-    } else {
-      setBalance(0);
-    }
+
+      const {
+        data: { nonce },
+      } = await server.get(`nonce/${addr}`);
+      setNonce(nonce);
+    
   }
 
   async function onRecoverySet(evt){
@@ -43,7 +47,10 @@ function Wallet({ message, setMessage, address, setRecoveryBit, recoveryBit, sig
         Address
         <input placeholder="Type address (auto filled when transaction sent)" value={address} onChange={onChange}></input>
       </label>
-      <div className="balance">Balance: {balance}</div>
+      <input disabled="true" placeholder="Balance" value={balance} ></input>
+
+      <div className="balance" value={balance}>Balance: {balance}</div>
+      <div className="balance"value = {nonce}>Next nonce: {nonce}</div>
     </div>
   );
 }
